@@ -18,6 +18,7 @@
   </div>
 </template>
 <script>
+import {server_img_url,server_url} from "../main.js"
 export default {
   name: 'login',
   data () {
@@ -33,7 +34,7 @@ export default {
         params.append('user_name',this.user_name)
         params.append('user_passwd',this.user_paswd)
 
-        this.$http.post('http://www.awanmo.com/login/',params).then(response =>{
+        this.$http.post(server_url+'login/',params).then(response =>{
 
         if(this.user_name&&this.user_paswd){
           if(response.data.status){

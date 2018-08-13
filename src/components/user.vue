@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 import Admin_0 from './setusername.vue'
 import Admin_1 from './setuser.vue'
@@ -44,7 +45,7 @@ export default {
       var params = new URLSearchParams();
       params.append('user_id',this.userid)
       console.log(this.userid)
-      this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response => {
+      this.$http.post(server_url+'get_user_site_setting/',params).then(response => {
       
         }, response => {
         console.log(response);

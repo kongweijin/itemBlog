@@ -4,7 +4,7 @@
     <div class="edit_body">
       <div class="bianji">
         <input type="text" placeholder="请输入文章标题" v-model="articletitle">
-        <mavon-editor v-model="articletext" class="editor" :style="edit_class"/>
+        <mavon-editor ref="edits" v-model="articletext" class="editor" :style="edit_class" @imgAdd="imgAdd"/>
       </div>
       <div class="voltage">
         <span>文章分类</span>
@@ -22,6 +22,8 @@
 
 <script>
 import blogHead from '../components/blogHead'
+import {server_img_url,server_url} from "../main.js"
+
 export default {
   name: 'index',
   data () {
@@ -41,6 +43,20 @@ export default {
    
   },
   methods:{
+   imgAdd(pos,imgfile){
+    var formdata = new FormData();
+    formdata.append('file',imgfile);
+    this.$http({
+        url: 'http://www.awanmo.com/upload/',
+        method: 'post',
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((response) => {
+      var temp_url = server_img_url + response.data.name
+      this.$refs.edits.$img2Url(pos,temp_url)
+      return 0
+    })
+   },
    set_article(){
       var select = document.getElementById("select");
       var index = select.selectedIndex;
@@ -54,10 +70,10 @@ export default {
         params.append('article_class_id',this.articleclassId)
         
       this.$http.post('http://www.awanmo.com/article_manage/',params).then(response => {
-         this.$router.push('/user/'+this.userid)
-        }, response => {
+        this.$router.push('/home/'+this.userid)
+      }, response => {
         console.log(response);
-        })
+      })
     },
     update_class(){
         var params = new URLSearchParams();

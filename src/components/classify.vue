@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 export default {
   name: 'classify',
   data () {
@@ -58,7 +59,7 @@ export default {
       update_class(){
         var params = new URLSearchParams();
         params.append('user_id',this.userid)
-        this.$http.post('http://www.awanmo.com/get_article_class/',params).then(response => {
+        this.$http.post(server_url+'get_article_class/',params).then(response => {
             this.class_list = response.data
         }, response => {
             console.log(response);
@@ -77,7 +78,7 @@ export default {
         params.append('do','del')
         params.append('class_id',item.class_id)
         params.append('class_name',item.class_name)
-        this.$http.post('http://www.awanmo.com/class_manage/',params).then(response => {
+        this.$http.post(server_url+'class_manage/',params).then(response => {
             if(response.data.status){
                 this.update_class()
                 alert("删除成功")
@@ -94,7 +95,7 @@ export default {
             params.append('do','update')
             params.append('class_id',item.class_id)
             params.append('class_name',item.class_name)
-            this.$http.post('http://www.awanmo.com/class_manage/',params).then(response => {
+            this.$http.post(server_url+'class_manage/',params).then(response => {
                 this.edit_num = -1
                 if(response.data.status){
                     console.log('更新成功~')
@@ -118,7 +119,7 @@ export default {
             params.append('do','add')
             params.append('class_id',0)
             params.append('class_name',this.new_class)
-            this.$http.post('http://www.awanmo.com/class_manage/',params).then(response => {
+            this.$http.post(server_url+'class_manage/',params).then(response => {
                 if(response.data.status){
                     this.update_class()
                     console.log('添加成功')

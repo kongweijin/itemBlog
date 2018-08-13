@@ -3,45 +3,48 @@
       <p class="admin_id_title">文章管理</p>
       <div class="admin_id_body">
         <div class="admin_id_head">
-            <select v-model="aa">
-                <option v-for="item in title" :key="item" selected="selected">{{item}}</option>
+            <select v-model="class_list">
+                <option value="all">全部文章</option>
+                <option v-for="item in class_name" :key="item">{{item}}</option>
             </select> 
             <input type="botton" value="添加" @click="towrite">
         </div>
         <div class="admin_id_artlce">
-            <p class="admin_id_artlceP" v-for="item in articleTitles " :key="item.article_title" ><span class="articlet_titles">{{item.article_title}}</span><span class="adimdel" @click="adimdel(item.article_id)">删除</span><span class="adimdel" @click="setarticle(item.article_id,item.user_id)">编辑</span></p>
+            <p class="admin_id_artlceP" v-for="item in articleTitles" :key="item.article_title" ><span class="articlet_titles">{{item.article_title}}</span><span class="adimdel" @click="adimdel(item.article_id)">删除</span><span class="adimdel" @click="setarticle(item.article_id,item.user_id)">编辑</span></p>
         </div>
       </div>
   </div>
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
+
 export default {
   name: 'admin_id',
   data () {
     return {
-      title:[],
+      class_name:[],
       articleTitle:[],
-      aa:"kong的默认分类"
+      class_list:"all"
     }
   },
   methods:{
     get_userxinxi(){
         var params = new URLSearchParams();
         params.append('user_id',this.userid)
-         this.$http.post('http://www.awanmo.com/get_article_class/',params).then(response =>{
-             for(var i =0;i<response.data.length;i++){
-                 this.title.push(response.data[i].class_name)
-             }
-      },response =>{
-        console.log(response)
-      })
+        this.$http.post(server_url+'get_article_class/',params).then(response =>{
+            for(var i =0;i<response.data.length;i++){
+                this.class_name.push(response.data[i].class_name)
+            }
+        },response =>{
+            console.log(response)
+        })
     },
     get_userartcle(){
-         var params = new URLSearchParams();
-         params.append('user_id',this.userid)
-         this.$http.post('http://www.awanmo.com/get_article/',params).then(response =>{
-         this.articleTitle = response.data
+        var params = new URLSearchParams();
+        params.append('user_id',this.userid)
+        this.$http.post(server_url+'get_article/',params).then(response =>{
+        this.articleTitle = response.data
       },response =>{
         console.log(response)
       })
@@ -57,10 +60,9 @@ export default {
         params.append('article_text',0)
         params.append('article_class_id',1)
         
-      this.$http.post('http://www.awanmo.com/article_manage/',params).then(response => {
-        console.log(response.data)
-        this.get_userartcle()
-        alert('删除成功')
+        this.$http.post(server_url+'article_manage/',params).then(response => {
+            this.get_userartcle()
+            alert('删除成功')
         }, response => {
         console.log(response);
         })
@@ -69,28 +71,29 @@ export default {
         this.$router.push('/edit/'+articleid+'/'+userid)
     },
     towrite(){
-     this.$router.push('/write/'+this.userid)
-   }
+        this.$router.push('/write/'+this.userid)
+    }
   },
-   computed:{
-      articleTitles(){
-        var arti = []
-        for(var i =0;i<this.articleTitle.length;i++){
-          if(this.articleTitle[i].article_class === this.aa){
-            arti.push(this.articleTitle[i])
-            }
-        } 
-        return arti
-      }
-  },
-  watch:{
-      
-  },
-  mounted(){
-      this.get_userxinxi()
-      this.get_userartcle()
-  },
-  props:['userid']
+    computed:{
+        articleTitles(){
+            if(this.class_list == 'all'){
+                return this.articleTitle
+            }else{
+                var arti = []
+                for(var i =0;i<this.articleTitle.length;i++){
+                    if(this.articleTitle[i].article_class === this.class_list){
+                    arti.push(this.articleTitle[i])
+                    }
+                }
+                return arti
+            } 
+        }
+    },
+    mounted(){
+        this.get_userxinxi()
+        this.get_userartcle()
+    },
+    props:['userid']
 }
 </script>
 

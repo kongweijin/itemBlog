@@ -21,6 +21,9 @@
 </template>
 
 <script>
+
+import {server_img_url,server_url} from "../main.js"
+
 export default {
   name: 'blogHead',
   data () {
@@ -36,7 +39,7 @@ export default {
   },
   methods:{
    get_login(){
-     this.$http.get('http://www.awanmo.com/get_login/').then(response =>{
+     this.$http.get(server_url+'get_login/').then(response =>{
          this.status = response.data.status
          sessionStorage.setItem("user_id",response.data.user_id)
        })
@@ -45,7 +48,7 @@ export default {
      var blogname = sessionStorage.getItem('user_id')
       var params = new URLSearchParams();
         params.append('user_id',blogname)
-       this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response =>{
+       this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
          this.blogname = response.data.blog_name
        })
    },

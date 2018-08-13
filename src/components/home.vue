@@ -3,7 +3,7 @@
     <blogHead :indexhead="indexhead" :headmidd="headmidd"></blogHead>
     <div class="home_body">
       <div class="bodyHead">
-        <a class="headIMG"><img src="../assets/3.jpg" alt="0"></a>
+        <a class="headIMG"><img :src="user_head" alt="0"></a>
         <div class="headRight">
           <a class="homeName">{{blogname}}</a>
           <p class="homeQM">{{bloginfo}}</p>
@@ -27,6 +27,7 @@
         <!-- 标签页右部分-->
         <div class="title">
           <ul>
+            <li @click="classarticle(-1,'all')" :class="{classcolor:-1 == num}">全部文章</li>
             <li v-for="(item,index) in nameClass" :key="item.class_name" @click="classarticle(index,item.class_name)" :class="{classcolor:index==num}">{{item.class_name}}</li>
           </ul>
         </div>
@@ -36,6 +37,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 export default {
   name: 'home',
@@ -47,57 +49,75 @@ export default {
       bloginfo:"",
       homeArticle:[],
       nameClass:[],
-      num:0,
-      key:""
+      num:-1,
+      key:"all",
+      user:0,
+      user_head:0,
     }
   },
   computed:{
     Aiticle(){
-      var ret = []
-      for(var i = 0;i < this.homeArticle.length;i++){
-        if(this.homeArticle[i].article_class == this.key){
-          ret.push(this.homeArticle[i])
+
+      if(this.key === 'all'){
+        return this.homeArticle
+      }else{
+        var ret = []
+        for(var i = 0;i < this.homeArticle.length;i++){
+          if(this.homeArticle[i].article_class == this.key){
+            ret.push(this.homeArticle[i])
+          }
         }
+        return ret
       }
-      return ret
+      
     }
   },
   methods:{
-   userArticle(){
-     var params = new URLSearchParams();
-     params.append('user_id',this.userid)
-     this.$http.post('http://www.awanmo.com/get_article/',params).then(response=>{
-       this.homeArticle = response.data
-     })
-   },
-   userblog(){
-     var params = new URLSearchParams();
-     params.append('user_id',this.userid)
-     this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response=>{
-       this.blogname = response.data.blog_name
-       this.bloginfo = response.data.blog_info
-     })
-   },
-   nameclass(){
-     var params = new URLSearchParams();
-     params.append('user_id',this.userid)
-     this.$http.post('http://www.awanmo.com/get_article_class/',params).then(response=>{
-       this.nameClass = response.data
-       this.key = response.data[0].class_name
-     })
-   },
-   classarticle(index,key){
-     this.num = index
-     this.key = key
-   },
-   toarticle(articleid,userid){
-     this.$router.push('/article/'+articleid+'/'+userid)
-   }
+    get_user(){
+      var urls = server_url+'get_user_list/?user_id='+this.userid
+      this.$http.get(urls).then(response=>{
+        this.user = response.data[0]
+        this.user_head = server_img_url + this.user.user_head
+        console.log(this.user_head)
+      },response=>{
+        console.log('错误',response.data)
+      })
+    },
+    userArticle(){
+      var params = new URLSearchParams();
+      params.append('user_id',this.userid)
+      this.$http.post(server_url+'get_article/',params).then(response=>{
+        this.homeArticle = response.data
+      })
+    },
+    userblog(){
+      var params = new URLSearchParams();
+      params.append('user_id',this.userid)
+      this.$http.post(server_url+'get_user_site_setting/',params).then(response=>{
+        this.blogname = response.data.blog_name
+        this.bloginfo = response.data.blog_info
+      })
+    },
+    nameclass(){
+      var params = new URLSearchParams();
+      params.append('user_id',this.userid)
+      this.$http.post(server_url+'get_article_class/',params).then(response=>{
+        this.nameClass = response.data
+      })
+    },
+    classarticle(index,key){
+      this.num = index
+      this.key = key
+    },
+    toarticle(articleid,userid){
+      this.$router.push('/article/'+articleid+'/'+userid)
+    }
   },
   mounted(){
-   this.userArticle()
-   this.userblog()
-   this.nameclass()
+    this.get_user()
+    this.userArticle()
+    this.userblog()
+    this.nameclass()
   },
   components:{
     blogHead:blogHead

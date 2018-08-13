@@ -4,14 +4,14 @@
     <div class="article_body">
       <h1 class="body_title">{{articleData.article_title}}</h1>
       <div class="author">
-        <a class="authorimg" @click="tohome"><img src="../assets/1.jpg" alt=""></a>
+        <a class="authorimg" @click="tohome"><img  :src="user_head" alt=""></a>
         <div class="user">
           <a class="username" @click="tohome">{{articleData.user_name}}</a>
           <span class="articledata">{{articleData.article_date}}</span>
         </div>
       </div>
       <div class="article_text">
-          <p>{{articleData.article_text}}</p>
+        <div class="article" v-html="compiledMarkdown"></div>
       </div>
     </div>
   </div>
@@ -19,28 +19,45 @@
 
 <script>
 import blogHead from '../components/blogHead'
+import marked from 'marked'
+import {server_img_url,server_url} from "../main.js"
+
+
 export default {
   name: 'Article',
   data () {
     return {
       indexhead:"1440",
       headmidd:"960",
-      articleData:[]
+      articleData:[],
+      user:0,
+      user_head:0
     }
   },
   computed:{
-   
+    compiledMarkdown(){
+      return marked(String(this.articleData.article_text))
+    }
   },
   methods:{
    get_article(){
       var params = new URLSearchParams();
-     params.append('article_id',this.articleid)
-     this.$http.post('http://www.awanmo.com/get_article/',params).then(response=>{
-       this.articleData = response.data
-       console.log('aa1',response.data)
-     },response=>{
-       console.log('aa2',response.data)
-     })
+      params.append('article_id',this.articleid)
+      this.$http.post(server_url+'get_article/',params).then(response=>{
+        this.articleData = response.data
+      },response=>{
+        console.log('错误',response.data)
+      })
+   },
+   get_user(){
+      var urls = server_url+'get_user_list/?user_id='+this.userid
+      this.$http.get(urls).then(response=>{
+        this.user = response.data[0]
+        this.user_head = server_img_url + this.user.user_head
+        console.log(this.user_head)
+      },response=>{
+        console.log('错误',response.data)
+      })
    },
    tohome(){
      this.$router.push('/home/'+this.userid)
@@ -48,6 +65,7 @@ export default {
   },
   mounted(){
    this.get_article()
+   this.get_user()
   },
   components:{
     blogHead:blogHead

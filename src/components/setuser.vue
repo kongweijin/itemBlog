@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 export default {
   name: 'setuser',
   data () {
@@ -35,7 +36,7 @@ export default {
           params.append('old_passwd',this.userpaswd)
           params.append('new_passwd',this.userDpaswd)
 
-        this.$http.post('http://www.awanmo.com/set_user/',params).then(response =>{
+        this.$http.post(server_url+'set_user/',params).then(response =>{
             if(response.data.status){
                 alert('密码修改成功')
                 this.username = ""
@@ -52,7 +53,7 @@ export default {
     get_username(){
         var params = new URLSearchParams();
         params.append('user_id',this.userid)
-         this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response =>{
+         this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
              this.username = response.data.blog_name
       },response =>{
         console.log(response)

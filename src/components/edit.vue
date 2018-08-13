@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 export default {
   name: 'edit',
@@ -44,7 +45,7 @@ export default {
    get__article(){
       var params = new URLSearchParams();
         params.append('article_id',this.articleid)
-      this.$http.post('http://www.awanmo.com/get_article/',params).then(response => {
+      this.$http.post(server_url+'get_article/',params).then(response => {
         this.articletitle = response.data.article_title
         this.articletext = response.data.article_text
         console.log(response.data)
@@ -64,8 +65,8 @@ export default {
         params.append('article_text',this.articletext)
         params.append('article_class_id',this.articleclassId)
         
-      this.$http.post('http://www.awanmo.com/article_manage/',params).then(response => {
-         this.$router.push('/admin/'+this.userid)
+      this.$http.post(server_url+'article_manage/',params).then(response => {
+         this.$router.push('/home/'+this.userid)
         }, response => {
         console.log(response);
         })
@@ -76,7 +77,7 @@ export default {
     getuserclass(){
       var params = new URLSearchParams();
       params.append('user_id',this.userid)
-      this.$http.post('http://www.awanmo.com/get_article_class/',params).then(response => {
+      this.$http.post(server_url+'get_article_class/',params).then(response => {
         this.userclass = response.data
         }, response => {
         console.log(response);

@@ -2,7 +2,7 @@
   <div class="seach">
     <blogHead :indexhead="indexhead" :headmidd="headmidd"></blogHead>
     <div class="seach_body">
-      <div class="seach_all"  v-if="aa">
+      <div class="seach_all"  v-if="flag">
         <div class="seach_left">
           <ul>
             <li v-for="(item,index) in title" :key="item" :class="{seach_leftLibg:index == 0}"><span>{{item}}</span></li>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 export default {
   name: 'seach',
@@ -36,7 +37,7 @@ export default {
       headmidd:"960",
       Seacharticle:[],
       title:["全部文章"],
-      aa:true,
+      flag:true,
       error:""
     }
   },
@@ -45,23 +46,23 @@ export default {
   },
   methods:{
     getseach(){
-    var params = new URLSearchParams();
+     var params = new URLSearchParams();
      params.append('search',this.seach)
-     this.$http.post('http://www.awanmo.com/search/',params).then(response=>{
-       if(response.data.status){
+     this.$http.post(server_url+'search/',params).then(response=>{
+       console.log(response.data)
+       if(response.data.status != false){
          this.Seacharticle = response.data
-         this.aa = true
+         this.flag = true
        }else{
-         this.aa = false
+         this.flag = false
          this.error = response.data.error
        }
-       console.log('aa2',response.data)
      },response=>{
        console.log('aa2',response.data)
      })
     },
-    toarticle(userid,articleid){
-     this.$router.push('/article/'+articleid+userid)
+    toarticle(articleid,userid){
+     this.$router.push('/article/'+articleid+'/'+userid)
    },
    tohome(userid){
      this.$router.push('/home/'+userid)

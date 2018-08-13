@@ -1,65 +1,103 @@
 <template>
   <div class="setuser">
       <p class="setuser_title">个人信息</p>
-      <div class="black" :style="black_style" v-if="xiugai"></div>
       <div class="setusername">
-        <span class="xiuGzl" @click="openxiugai">修改个人资料</span>
-        <dl class="user_left">
-            <dt><img :src="userimg"></dt>
+        <span class="xiuGzl" @click="open">修改个人资料</span>
+        <dl class="user_left" @click="to_home()">
+            <dt><img :src="user_head"></dt>
         </dl>
         <dl class="user_right">
-            <dt>{{username}}</dt>
-            <dd>{{qiming}}</dd>
+            <dt>{{blogName}}</dt>
+            <dd>{{blogInfo}}</dd>
         </dl>
-      </div>
-      <div class="xiuGzl_div" v-if="xiugai">
-            <span class="xiuGzl_x" @click="delxiugai">x</span>
-            <p class="xiuGzl_p">用户简介</p>
-            <div class="xiuGzl_body">
-                <span class="xiuGzl_user">用户名：{{username}}</span>
-            </div>
-            <div class="xiuGzl_foot">
-                <span class="xiuGzl_Nc">昵称 :<input type="text" v-model="blogName"></span>
-                <span class="xiuGzl_Gs">概述 :<textarea maxlength="12" v-model="blogInfo"></textarea></span>
-            </div>
-            <div class="xiuGzl_qb">
-                <span class="xiuGzl_qb_del" @click="delxiugai">取消</span>
-                <span class="xiuGzl_qb_pus" @click="set_user">保存</span>
-            </div>
+        <div style="margin-top:10px">
+            <el-upload
+                class="upload-demo"
+                :action="upload_url"
+                :on-success = "modeify_user_head"
+                :with-credentials = true
+                :show-file-list = false
+                :file-list="fileList">
+                <el-button size="small" type="primary">修改头像</el-button>
+            </el-upload>
         </div>
+        <span class="is_error">{{ error }}</span>
+        
+      </div>
+      <el-dialog
+        title="用户简介"
+        :visible.sync="is_show"
+        width="30%">
+        <span class="xiuGzl_Nc">用户名 :{{ user.user_name }}</span>
+        <span class="xiuGzl_Nc">昵称 :<input type="text" v-model="blogName"></span>
+        <span class="xiuGzl_Gs">概述 :<textarea maxlength="12" v-model="blogInfo"></textarea>
+        </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="set_user">保存</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 export default {
   name: 'setusername',
   data () {
     return {
-      userimg:require("../assets/3.jpg"),
+      user:0,
+      user_head:0,
       username:"",
-      qiming:"",
-      xiugai:false,
+      is_show:false,
       black_style:{"height":0,"width":0},
       blogName:"",
-      blogInfo:""
+      blogInfo:"",
+      upload_url:server_url + "upload/",
+      fileList:[],
+      error:"",
     }
   },
   methods:{
-      delxiugai(){
-          this.xiugai = false
-      },
-      openxiugai(){
-          this.xiugai = true
-      },
-      get_username(){
+    modeify_user_head(response, file, fileList){
+
+        if(response.status){
+            var params = new URLSearchParams();
+            params.append('do','re_head')
+            params.append('user_head',response.name)
+            this.$http.post(server_url+'set_user/',params).then(response =>{
+                if(response.data.status){
+                    this.error = '修改成功'
+                }
+            },response =>{
+                this.error = '修改失败'
+                console.log(response)
+            })
+        }else{
+            this.error = '修改失败'
+        }
+
+    },
+    open(){
+        this.is_show = true
+    },
+    get_username(){
         var params = new URLSearchParams();
         params.append('user_id',this.userid)
-         this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response =>{
-             this.username = response.data.blog_name
-            this.qiming = response.data.blog_info
-      },response =>{
-        console.log(response)
-      })
+        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
+            this.blogName = response.data.blog_name
+            this.blogInfo = response.data.blog_info
+        },response =>{
+            console.log(response)
+        })
+    },
+    get_user(){
+        var urls = server_url+'get_user_list/?user_id='+this.userid
+        this.$http.get(urls).then(response=>{
+            this.user = response.data[0]
+            this.user_head = server_img_url + this.user.user_head
+        },response=>{
+            console.log('错误',response.data)
+        })
     },
     set_user(){
         var params = new URLSearchParams();
@@ -67,22 +105,19 @@ export default {
         params.append('blog_info',this.blogInfo)
         params.append('blog_head_color',0)
         params.append('blog_bgm',0)
-         this.$http.post('http://www.awanmo.com/set_user_site/',params).then(response =>{
-            this.xiugai = false
-            console.log(this.userid)
-             this.get_username()
+         this.$http.post(server_url+'set_user_site/',params).then(response =>{
+            this.is_show = false
+            this.get_username()
       },response =>{
         console.log(response)
       })
+    },
+    to_home(){
+        this.$router.push('/home/'+this.userid)
     }
   },
-  computed:{
-      
-  },
-  watch:{
-      
-  },
   mounted(){
+    this.get_user()
     this.get_username()
   },
   created(){
@@ -111,6 +146,7 @@ export default {
 .user_left dt{
     height: 150px;
     width: 150px;
+    cursor: pointer;
 }
 .user_left{
     margin-right: 50px
@@ -240,6 +276,10 @@ margin: 10px
     font-size: 17px;
     border-bottom: 1px solid #dadada;
     margin-bottom: 30px
+}
+.is_error{
+    padding-top:10px;
+    color: red;
 }
 </style>
 

@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 export default {
   name: 'index',
@@ -157,14 +158,14 @@ export default {
    },
    //获取文章
    get_all_article(){
-     this.$http.post('http://www.awanmo.com/get_article/').then(response =>{
+     this.$http.post(server_url+'get_article/').then(response =>{
        this.all_article = response.data
        
      })
    },
    //获取所有分类
    get_all_class(){
-      this.$http.post('http://www.awanmo.com/get_article_class/').then(response =>{
+      this.$http.post(server_url+'get_article_class/').then(response =>{
        this.all_class = response.data
        if(response.data.length>5){
          this.class_gd = true
@@ -175,12 +176,12 @@ export default {
    },
    //获取所有用户 blog名
    get_all_user(){
-      this.$http.get('http://www.awanmo.com/get_user_list/').then(response =>{
+      this.$http.get(server_url+'get_user_list/').then(response =>{
        this.all_user = response.data
        for(var i = 0;this.all_user.length>i;i++){
         var params = new URLSearchParams();
         params.append('user_name',this.all_user.user_id[i])
-        this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response =>{
+        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
           this.blogname.push(this.all_user.blog_name)
         })
        }

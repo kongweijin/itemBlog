@@ -75,6 +75,8 @@
 </template>
 
 <script>
+
+import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
 export default {
   name: 'index',
@@ -147,26 +149,26 @@ export default {
      this.b = index
    },
    get_all_article(){
-     this.$http.post('http://www.awanmo.com/get_article/').then(response =>{
+     this.$http.post(server_url+'get_article/').then(response =>{
        this.all_article = response.data
        this.ret = response.data[0].article_class
      })
    },
    get_all_class(){
-      this.$http.post('http://www.awanmo.com/get_article_class/').then(response =>{
+      this.$http.post(server_url+'get_article_class/').then(response =>{
        this.all_class = response.data
       },response =>{
        console.log(response.data)
       })
    },
    get_all_user(){
-      this.$http.get('http://www.awanmo.com/get_user_list/').then(response =>{
+      this.$http.get(server_url+'get_user_list/').then(response =>{
        this.all_user = response.data
        for(var i = 0;this.all_user.length>i;i++){
          console.log(222,this.all_user[i])
         var params = new URLSearchParams();
         params.append('user_name',this.all_user.user_id[i])
-        this.$http.post('http://www.awanmo.com/get_user_site_setting/',params).then(response =>{
+        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
           this.blogname.push(this.all_user.blog_name)
           console.log(11111,this.all_user.blog_name)
         })
