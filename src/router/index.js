@@ -11,8 +11,7 @@ import ceshi from '../components/ceshi'
 import seach from '../components/seach'
 import axios from 'axios'
 import { vuex } from '../vuex/vuex'
-
-
+import {server_img_url,server_url} from "../main.js"
 
 Vue.use(Router)
 
@@ -22,54 +21,78 @@ export const router = new Router({
     {
       path: '/',
       name: 'index',
-      component: index
+      component: index,
+      meta:{
+        title:'首页'
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: login,
+      meta:{
+        title:'登录'
+      }
     },
     {
       path: '/home/:userid',
       name: 'home',
       component: home,
-      props:true
+      props:true,
+      meta:{
+        title:'个人主页'
+      }
     },
     {
       path: '/write/:userid',
       name: 'write',
       component: write,
-      props:true
+      props:true,
+      meta:{
+        title:'添加文章'
+      }
     },
     {
       path: '/article/:articleid/:userid',
       name: 'Article',
       component: Article,
-      props:true
+      props:true,
+      meta:{
+        title:'文章'
+      }
     },
     {
       path: '/user/:userid',
       name: 'user',
       component: user,
-      props:true
+      props:true,
+      meta:{
+        title:'用户设置'
+      }
     },
     {
       path: '/edit/:articleid/:userid',
       name: 'edit',
       component: edit,
-      props:true
+      props:true,
+      meta:{
+        title:'用户设置2'
+      }
     },
     {
       path: '/seach/:seach',
       name: 'seach',
       component: seach,
-      props:true
+      props:true,
+      meta:{
+        title:'搜索'
+      }
     },
   ]
 })
 
 function get_userft(t,f){
-  axios.get('http://www.awanmo.com/get_login/').then((response)=>{
+  axios.get(server_url + 'get_login/').then((response)=>{
     if(response.data.status){
       t(response)
     }else{
@@ -80,6 +103,9 @@ function get_userft(t,f){
 
 
 router.beforeEach((to,from,next) =>{
+  if (to.meta.title) {
+    document.title = to.meta.title;
+  }
   if(to.name === 'login'){
     if(vuex.getters.is_login){
       next({path:'/'})

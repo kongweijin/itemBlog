@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <router-view/>
+    <appfoot></appfoot>
   </div>
 </template>
 
 <script>
 
+import appfoot from './components/appfoot'
+
+
 export default {
   name: 'App',
   components:{
+    appfoot
   }
 }
 </script>
@@ -20,11 +25,15 @@ export default {
   box-sizing:border-box;
   -webkit-text-stroke-width: 0px;
 }
+
+.app{
+  min-height: 1500px;
+}
+
 body{
   color: #333;
   font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
   background-color: #fff;
-  
 }
 a{
   text-decoration: none;

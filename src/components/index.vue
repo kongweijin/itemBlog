@@ -125,13 +125,13 @@ export default {
   methods:{
     //轮播图定时
     play(){
-     this.timer = setInterval(this.autoplay,6000)
-   },
-   autoplay(){
-     this.b++;
-     if(this.b===3){
-       this.b = 0
-     }
+      this.timer = setInterval(this.autoplay,6000)
+    },
+    autoplay(){
+      this.b++;
+      if(this.b===3){
+        this.b = 0
+    }
    },
    //轮播图下标签选取图片
    toindex(aa){
@@ -177,14 +177,14 @@ export default {
    //获取所有用户 blog名
    get_all_user(){
       this.$http.get(server_url+'get_user_list/').then(response =>{
-       this.all_user = response.data
-       for(var i = 0;this.all_user.length>i;i++){
-        var params = new URLSearchParams();
-        params.append('user_name',this.all_user.user_id[i])
-        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
-          this.blogname.push(this.all_user.blog_name)
-        })
-       }
+        this.all_user = response.data
+        for(var i = 0;this.all_user.length>i;i++){
+          var params = new URLSearchParams();
+          params.append('user_name',this.all_user[i].user_name)
+          this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
+            this.blogname.push(this.all_user.blog_name)
+          })
+        }
       },response =>{
        console.log(response.data)
       })

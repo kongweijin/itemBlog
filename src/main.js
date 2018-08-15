@@ -15,8 +15,8 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
 
-export const server_img_url = "http://www.awanmo.com/static/file_temp/"
-export const server_url = "http://www.awanmo.com/"
+export const server_img_url = "http://api.ergouz.net/static/file_temp/"
+export const server_url = "http://api.ergouz.net/"
 
 Vue.use(ElementUI);
 Vue.use(mavonEditor)

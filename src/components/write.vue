@@ -47,7 +47,7 @@ export default {
     var formdata = new FormData();
     formdata.append('file',imgfile);
     this.$http({
-        url: 'http://www.awanmo.com/upload/',
+        url: server_url + 'upload/',
         method: 'post',
         data: formdata,
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -69,7 +69,7 @@ export default {
         params.append('article_text',this.articletext)
         params.append('article_class_id',this.articleclassId)
         
-      this.$http.post('http://www.awanmo.com/article_manage/',params).then(response => {
+      this.$http.post(server_url +'article_manage/',params).then(response => {
         this.$router.push('/home/'+this.userid)
       }, response => {
         console.log(response);
@@ -78,7 +78,7 @@ export default {
     update_class(){
         var params = new URLSearchParams();
         params.append('user_id',this.userid)
-        this.$http.post('http://www.awanmo.com/get_article_class/',params).then(response => {
+        this.$http.post(server_url + 'get_article_class/',params).then(response => {
             this.class_list = response.data
         }, response => {
             console.log(response);
