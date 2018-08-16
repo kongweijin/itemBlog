@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <blogHead :indexhead="indexhead" :headmidd="headmidd" ></blogHead>
-    <div class="index_all">
+    <div class="index_all" :style="minheight">
       <div class="index_left">
         <!-- 轮播图开始 -->
         <div class="index_word" @mouseenter="off"  @mouseleave="no"><!-- off鼠标悬停时禁止 no移除启动 -->
@@ -71,12 +71,14 @@
         </div>
       </div>
     </div>
+    <appfoot></appfoot>
   </div>
 </template>
 
 <script>
 import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
+import appfoot from '../components/appfoot'
 export default {
   name: 'index',
   data () {
@@ -96,7 +98,10 @@ export default {
       class_gd:false,//分类数量在5以下不显示
       timer:null,//窗口定时器
       xtzz:true, //指针是否显示
-      fade:"ddd"
+      fade:"ddd",
+      minheight:{
+        "height":0
+      }
     }
   },
   computed:{
@@ -267,9 +272,11 @@ export default {
   created(){
     this.play()
     window.time = 0
+    this.minheight.height = (window.screen.height-260)+'px'
   },
    components:{
-    blogHead:blogHead
+    blogHead:blogHead,
+    appfoot:appfoot
   },
 }
 </script>

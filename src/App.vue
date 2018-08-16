@@ -1,19 +1,18 @@
 <template>
   <div id="app">
     <router-view/>
-    <appfoot></appfoot>
+    
   </div>
 </template>
 
 <script>
 
-import appfoot from './components/appfoot'
 
 
 export default {
   name: 'App',
   components:{
-    appfoot
+    
   }
 }
 </script>

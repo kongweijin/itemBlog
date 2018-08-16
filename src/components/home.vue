@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <blogHead :indexhead="indexhead" :headmidd="headmidd"></blogHead>
-    <div class="home_body">
+    <div class="home_body" :style="minheight">
       <div class="bodyHead">
         <a class="headIMG"><img :src="user_head" alt="0"></a>
         <div class="headRight">
@@ -33,12 +33,14 @@
         </div>
       </div>
     </div>
+    <appfoot></appfoot>
   </div>
 </template>
 
 <script>
 import {server_img_url,server_url} from "../main.js"
 import blogHead from '../components/blogHead'
+import appfoot from '../components/appfoot.vue'
 export default {
   name: 'home',
   data () {
@@ -53,6 +55,9 @@ export default {
       key:"all",
       user:0,
       user_head:0,
+      minheight:{
+        "height":0
+      }
     }
   },
   computed:{
@@ -118,6 +123,9 @@ export default {
     this.userArticle()
     this.userblog()
     this.nameclass()
+  },
+   created(){
+    this.minheight.height = (window.screen.height-260)+'px'
   },
   components:{
     blogHead:blogHead
