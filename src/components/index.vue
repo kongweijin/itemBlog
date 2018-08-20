@@ -138,7 +138,7 @@ export default {
     },
     autoplay(){
       this.b++;
-      if(this.b===3){
+      if(this.b===this.imga.length){
         this.b = 0
     }
    },
@@ -189,8 +189,17 @@ export default {
         console.log(response.data)
         this.all_user = response.data
         
-        for(var i = 0;this.all_user.length>i;i++){
+        for(let i = 0;this.all_user.length>i;i++){
          this.all_user[i].user_head = server_img_url + this.all_user[i].user_head
+         //获取所有用户 blog名
+         var params = new URLSearchParams();
+        params.append('user_id',this.all_user[i].user_id)
+        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
+          this.all_user[i].push(response.data)
+            console.log(111,this.all_user[i],response.data)
+        },response =>{
+            console.log(response)
+        })
         }
       },response =>{
        console.log(response.data)
@@ -241,7 +250,7 @@ export default {
         if(this.b>0){
        this.b-=1
       }else if(this.b = 0){
-       this.b = 3
+       this.b = this.imga.length
       }
      }else{
        console.log(window.time)
@@ -576,7 +585,9 @@ export default {
   text-align: center;
   font-size: 14px;
   color: #969696;
-  margin: 25px 0px
+}
+.right_ariter ul{
+  margin-top: 50px;
 }
 .right_ariter li{
   margin-top: 15px;
@@ -591,7 +602,9 @@ export default {
   height: 40px;
   width: 40px;
   float: left;
-  margin-right: 10px
+  margin-right: 10px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 .user_head img{
   height: 100%;
@@ -611,12 +624,15 @@ export default {
   text-align: center;
   border: 1px solid #e9e9e9;
   padding: 20px;
+  min-height: 200px
 }
 .ontitle a{
   color: #969696;
 }
 .ontitle p{
+  margin-top: 10px;
   text-align: left;
+  text-indent: 24px;
   color: #969696;
   font-size: 12px;
 }
