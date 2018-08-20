@@ -7,7 +7,7 @@
         <img src="../assets/2dog.png" alt="logo">
         </a>
         <!--写文章，登录，主页 -->
-        <a class="head_write" @click="towrite">写文章</a>
+        <a class="head_write" @click="towrite" v-if="status">写文章</a>
         <a class="head_login" v-if="status" @click="setuser">{{blogname}}</a>
         <a href="/login/" class="head_login" v-else >登录</a>
         <div class="head_middo" :style="{width:headmidd + 'px'}">

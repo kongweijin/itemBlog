@@ -2,9 +2,10 @@
   <div class="index">
     <blogHead :indexhead="indexhead" :headmidd="headmidd" ></blogHead>
     <div class="index_all" :style="minheight">
+       
       <div class="index_left">
-        <!-- 轮播图开始 -->
-        <div class="index_word" @mouseenter="off"  @mouseleave="no"><!-- off鼠标悬停时禁止 no移除启动 -->
+       <!-- 轮播图开始 -->
+        <div class="index_word" @mouseenter="off"  @mouseleave="no" v-if="true"><!-- off鼠标悬停时禁止 no移除启动 -->
           <a class="left_jiantou" @click="world_left" v-if="xtzz">←</a>
           <a class="right_jiantou" @click="world_right" v-if="xtzz">→</a>
           <ul class="allBTbiaoqian">
@@ -13,18 +14,6 @@
           <transition-group  :name="fade" tag="ul">
           <div v-for="(item,index) in imga" :key="item" class="imag" v-show="index == b "><a ><img :src="item"></a></div>
           </transition-group>
-        </div>
-        <!-- 专题开始 -->
-        <div class="class_zt">
-          <a class="class_one" @click="qbfl">
-            <div class="class_head"></div>
-            <div class="class_name">全部分类</div>
-          </a>
-          <a v-for="(item,index) in all_class" :key="index" class="class_one" @click="getret(item.class_name)" v-if="index<classnum">
-            <div class="class_head"></div>
-            <div class="class_name">{{item.class_name}}</div>
-          </a>
-          <a class="class_more" v-if="class_gd" @click="classGd">更多分类</a> <!-- 五个以下不显示 -->
         </div>
         <!-- 文章内荣开始 -->
         <div class="index_article">
@@ -46,7 +35,7 @@
       </div>
       <!-- 右边开始 -->
       <div class="index_right">
-        <div class="right_head">
+        <div class="right_head" v-if="false">
           <a href="/">
           <img src="../assets/7.png" alt="7">
           </a>
@@ -63,11 +52,26 @@
           <img src="../assets/dxt.png" alt="7">
           </a>
         </div>
+        <!-- 二狗成员 -->
         <div class="right_ariter">
-          <div class="Writeariter">抄写作者</div>
+          <div class="Writeariter">二狗成员</div>
           <ul>
-            <li v-for="item in all_user" :key="item" @click="tohome(item.user_id)">{{item.user_name}}</li>
+            <li v-for="item in all_user" :key="item" @click="tohome(item.user_id)" class="item_username"><div class="user_head"><img :src="item.user_head"></div><span>{{item.user_name}}</span></li>
           </ul>
+        </div>
+        <!-- 专题开始 -->
+        <div class="class_zt" v-if="true">
+          <a class="class_one" @click="qbfl">
+            <div class="class_name">全部分类</div>
+          </a>
+          <a v-for="(item,index) in all_class" :key="index" class="class_one" @click="getret(item.class_name)" v-if="index<classnum">
+            <div class="class_name">{{item.class_name}}</div>
+          </a>
+          <a class="class_more" v-if="class_gd" @click="classGd">更多分类</a> <!-- 五个以下不显示 -->
+        </div>
+        <div class="ontitle">
+          <a>关于二狗</a>
+          <p>这是两个新手上路第一个版本，内容会不断更新</p>
         </div>
       </div>
     </div>
@@ -84,7 +88,7 @@ export default {
   data () {
     return {
       show: true,
-      imga:[require('../assets/1.jpg'),require('../assets/2.jpg'),require('../assets/3.jpg')],
+      imga:[require('../assets/f1.jpg'),require('../assets/f2.jpg')],
       b:0,//轮播图索引
       indexnum:10,//默认只显示10片文章
       all_article:[],
@@ -101,7 +105,7 @@ export default {
       fade:"ddd",
       minheight:{
         "height":0
-      }
+      },
     }
   },
   computed:{
@@ -180,15 +184,13 @@ export default {
       })
    },
    //获取所有用户 blog名
-   get_all_user(){
+   get_all_user(){ 
       this.$http.get(server_url+'get_user_list/').then(response =>{
+        console.log(response.data)
         this.all_user = response.data
+        
         for(var i = 0;this.all_user.length>i;i++){
-          var params = new URLSearchParams();
-          params.append('user_name',this.all_user[i].user_name)
-          this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
-            this.blogname.push(this.all_user.blog_name)
-          })
+         this.all_user[i].user_head = server_img_url + this.all_user[i].user_head
         }
       },response =>{
        console.log(response.data)
@@ -331,6 +333,7 @@ export default {
   overflow: hidden;
 }
 .imag img{
+  width: 100%;
   height: 100%;
 }
 
@@ -356,7 +359,7 @@ export default {
   width: 100%;
   border-radius:10px;
   position: relative;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
   height: 270px;
 }
 
@@ -455,10 +458,9 @@ export default {
   float: left;
 }
 .class_name{
-  float: left;
   padding: 0 11px 0 6px;
   font-size: 14px;
-  line-height: 32px
+  line-height: 32px;
 }
 .class_more{
   display: inline-block;
@@ -566,12 +568,15 @@ export default {
   padding-top: 0;
   font-size: 13px;
   text-align: center;
-  margin-top: 50px
-}
+  border: 1px solid #e9e9e9;
+  padding: 20px;
+  min-height: 270px
+  }
 .Writeariter{
   text-align: center;
   font-size: 14px;
   color: #969696;
+  margin: 25px 0px
 }
 .right_ariter li{
   margin-top: 15px;
@@ -581,5 +586,38 @@ export default {
 }
 .right_ariter li:hover{
   color: #969696;
+}
+.user_head{
+  height: 40px;
+  width: 40px;
+  float: left;
+  margin-right: 10px
+}
+.user_head img{
+  height: 100%;
+  width: 100%
+}
+.item_username{
+  clear: both;
+  padding-bottom: 10px;
+}
+.item_username span{
+  line-height: 40px;
+  font-size: 17px
+}
+.ontitle{
+  padding-top: 0;
+  font-size: 13px;
+  text-align: center;
+  border: 1px solid #e9e9e9;
+  padding: 20px;
+}
+.ontitle a{
+  color: #969696;
+}
+.ontitle p{
+  text-align: left;
+  color: #969696;
+  font-size: 12px;
 }
 </style>
