@@ -38,7 +38,7 @@ export default {
     width: 100%;
     line-height: 1.5;
     display: block;
-    color: #ea6f5a
+    color: #000000;
   }
   .aaa img{
     height: 40px;

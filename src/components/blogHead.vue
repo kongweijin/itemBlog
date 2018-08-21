@@ -112,7 +112,7 @@ export default {
   border-radius: 20px;
   font-size: 15px;
   color: #fff;
-  background-color: #ea6f5a;
+  background-color: #409EFF;
   text-align: center;
   cursor: pointer;
 }
@@ -140,7 +140,7 @@ export default {
 }
 .head_fist{
   float: left;
-  color: #ea6f5a;
+  color: #409EFF;
   font-size: 17px;
   margin-top:17px;
   margin-right: 100px

@@ -35,28 +35,14 @@
       </div>
       <!-- 右边开始 -->
       <div class="index_right">
-        <div class="right_head" v-if="false">
-          <a href="/">
-          <img src="../assets/7.png" alt="7">
-          </a>
-          <a href="/">
-          <img src="../assets/30r.png" alt="7">
-          </a>
-          <a href="/">
-          <img src="../assets/lz.png" alt="7">
-          </a>
-          <a href="/">
-          <img src="../assets/js.png" alt="7">
-          </a>
-          <a href="/">
-          <img src="../assets/dxt.png" alt="7">
-          </a>
-        </div>
         <!-- 二狗成员 -->
         <div class="right_ariter">
           <div class="Writeariter">二狗成员</div>
           <ul>
-            <li v-for="item in all_user" :key="item" @click="tohome(item.user_id)" class="item_username"><div class="user_head"><img :src="item.user_head"></div><span>{{item.user_name}}</span></li>
+            <li v-for="item in all_user" :key="item" @click="tohome(item.user_id)" class="item_username"><div class="user_head"><img :src="item.user_head"></div>
+              <span>{{item.user_name}}</span>
+              <span>{{item.blog.blog_info}}</span>
+            </li>
           </ul>
         </div>
         <!-- 专题开始 -->
@@ -186,21 +172,19 @@ export default {
    //获取所有用户 blog名
    get_all_user(){ 
       this.$http.get(server_url+'get_user_list/').then(response =>{
-        console.log(response.data)
         this.all_user = response.data
-        
         for(let i = 0;this.all_user.length>i;i++){
-         this.all_user[i].user_head = server_img_url + this.all_user[i].user_head
-         //获取所有用户 blog名
-         var params = new URLSearchParams();
-        params.append('user_id',this.all_user[i].user_id)
-        this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
-          this.all_user[i].push(response.data)
-            console.log(111,this.all_user[i],response.data)
-        },response =>{
+          this.all_user[i].user_head = server_img_url + this.all_user[i].user_head
+          //获取所有用户 blog名
+          var params = new URLSearchParams();
+          params.append('user_id',this.all_user[i].user_id)
+          this.$http.post(server_url+'get_user_site_setting/',params).then(response =>{
+            this.all_user[i]['blog'] = response.data 
+          },response =>{
             console.log(response)
-        })
+          })
         }
+        console.log("ceshi2",this.all_user)
       },response =>{
        console.log(response.data)
       })
